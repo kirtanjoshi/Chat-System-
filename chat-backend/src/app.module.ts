@@ -9,6 +9,7 @@ import { MailService } from './auth/dto/mail.service';
 import { ChatModule } from './chat/chat.module';
 import { LinkPreviewService } from './link-preview/link-preview.service';
 import { LinkPreviewController } from './link-preview/link-preview.controller';
+import { MetadataController } from './chat/metadata.controller';
   
 
 @Module({
@@ -32,7 +33,7 @@ import { LinkPreviewController } from './link-preview/link-preview.controller';
     ChatModule,
 
   ],
-  controllers: [AppController, LinkPreviewController],
+  controllers: [AppController, LinkPreviewController,MetadataController],
   providers: [AppService
     , MailService, LinkPreviewService
   ],
