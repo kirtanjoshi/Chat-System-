@@ -1,0 +1,24 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { Module } from '@nestjs/common';
+import { ChatService } from './chat.service';
+import { ChatGateway } from './chat.gateway';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Chat } from 'src/typeorm/chat.entities';
+import { ChatController } from './chat.contoller';
+// import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
+import { configureCloudinary } from './cloudinay/cloudinary.config';
+configureCloudinary();
+@Module({
+  imports: [TypeOrmModule.forFeature([Chat]),
+    // 
+  MulterModule.register({}) /// used for file interceptor
+  
+  ],
+  controllers: [ChatController],
+  
+  providers: [ChatGateway, ChatService],
+})
+export class ChatModule {}
