@@ -1,20 +1,26 @@
 /* eslint-disable prettier/prettier */
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class ChatDto{
+export class ChatDto {
+  @IsNotEmpty()
+  senderId: number;
 
-    @IsNotEmpty()
-    senderId: number;
-    senderEmail: string;
-    @IsNotEmpty()
-    receiverEmail: string;
+  @IsNotEmpty()
+  senderEmail?: string;
 
-    receiverId: number;
-    @IsString()
-    content: string;
 
-    @IsString()
-    image: string;
-    
-    replyToMessageId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+
+  @IsOptional()
+  replyToMessageId?: number;
+
+  @IsNotEmpty()
+  roomId: number;
 }

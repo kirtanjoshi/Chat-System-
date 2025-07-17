@@ -56,6 +56,10 @@ export class AuthService {
             };
         }
     }
+
+    async getAllUsers(): Promise<User[]> {
+        return this.userRepo.find();
+    }
     
 
     async login(loginDto: LoginDto): Promise<{
