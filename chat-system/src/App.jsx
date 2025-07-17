@@ -6,6 +6,8 @@ import SignUpPage from './auth/SignUp';
 import Loginpage from './auth/LoginPage';
 import ForgotPasswordPage from './auth/FogotPasswordPage';
 import ResetPassword from './auth/ResetPassword';
+import GroupCompoents from './GroupComponent';
+import CreateGroup from './CreateGroup';
 import { use } from 'react';
 function App() {
   const user = JSON.parse(localStorage.getItem("user")) 
@@ -17,6 +19,11 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/signUp" element={<SignUpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/create" element={<CreateGroup />} />
+
+        <Route path="/chat" element={<GroupCompoents />}></Route>
+        {/* 
         <Route
           path="/chat"
           element={
@@ -31,7 +38,7 @@ function App() {
               navigate("/")
             )
           }
-        ></Route>
+        ></Route> */}
         <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </>
