@@ -17,6 +17,8 @@ import {
   File,
 } from "lucide-react";
 
+import LinkPreviewComponent from "../auth/link-preview";
+
 const user = JSON.parse(localStorage.getItem("user"));
 const CURRENT_USER_ID = user?.id;
 const CURRENT_USER_EMAIL = user?.email;
@@ -131,43 +133,12 @@ function ChatApp() {
     }
   };
 
-  // const sendMessage = async () => {
-  //   if (!input.trim() && !selectedImage) return;
-
-  //     let imageUrl = null;
-  //   if (image) {
-  //     imageUrl = await uploadImage(image);
-  //     if (!imageUrl) return;
-  //   }
-
-  //   const payload = {
-  //     senderId: CURRENT_USER_ID,
-  //     senderEmail: CURRENT_USER_EMAIL,
-  //     content: input.trim(),
-  //     replyToMessageId: replyTo?.id,
-  //     type: selectedImage ? "image" : "text",
-  //     imageData: imageUrl ? imagePreview : null,
-  //     fileName: selectedImage ? selectedImage.name : null,
-  //   };
-  //       setImage(null);
-
-  //     console.log("Payload:", payload.replyToMessageId);
-
-  //   if (selectedChat.isGroup) {
-  //     socket.emit("sendGroupMessage", { ...payload, roomId: selectedChat.id });
-  //   } else {
-  //     socket.emit("sendPrivateMessage", {
-  //       ...payload,
-  //       receiverId: selectedChat.id,
-  //       receiverEmail: selectedChat.email,
-  //     });
-  //   }
-
-  //   setReplyTo(null);
-  //   setInput("");
-  //   clearImageSelection();
-  // };
-
+  
+ const extractFirstUrl = (text) => {
+   const urlRegex = /(https?:\/\/[^\s]+)/g;
+   const urls = text?.match(urlRegex);
+   return urls?.[0] ?? null;
+ };
 
   const sendMessage = async () => {
     if (!input.trim() && !selectedImage) return;
@@ -187,6 +158,8 @@ function ChatApp() {
       image: imageUrl || null,
     };
 
+
+    
     setSelectedImage(null);
     setImagePreview(null);
 
@@ -509,7 +482,14 @@ function ChatApp() {
                             />
                           )}
                           {msg.content && (
-                            <p className="text-sm">{msg.content}</p>
+                            <>
+                              <p className="break-words whitespace-pre-wrap leading-relaxed">
+                                {msg.content}
+                              </p>
+                              <LinkPreviewComponent
+                                url={extractFirstUrl(msg.content)}
+                              />
+                            </>
                           )}
                         </div>
 

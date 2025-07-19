@@ -25,7 +25,7 @@ import { MetadataController } from './chat/metadata.controller';
       password: 'kirtan123',
       database: 'chatsystem_db',
       // entities: [__dirname + '/../typeorm/*.entity.{js,ts}'],
-      entities: [__dirname + '/typeorm/*.entity.{ts,js}'],
+      // entities: [__dirname + '/typeorm/*.entity.{ts,js}'],
 
       synchronize: true,
       autoLoadEntities: true,

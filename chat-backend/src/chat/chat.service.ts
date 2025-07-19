@@ -4,10 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Chat } from 'src/typeorm/chat.entity';
-import { ChatRoom } from 'src/typeorm/chatroom.entity';
-import { ChatRoomParticipant } from 'src/typeorm/room-participants.entity';
-import { User } from 'src/typeorm/auth.typeorm';
+import { Chat } from 'src/chat/enitity/chat.entity';
+import { ChatRoom } from 'src/chat/enitity/chatroom.entity';
+import { ChatRoomParticipant } from 'src/chat/enitity/room-participants.entity';
+import { User } from 'src/auth/entity/auth.entity';
 
 import { ChatDto } from './dto/chat.dto';
 import { CreateGroupDto } from './dto/room-participants';

@@ -7,11 +7,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/typeorm/auth.typeorm';
+import { User } from 'src/auth/entity/auth.entity';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/signin.dto';
 import { ResetPasswordDto } from './dto/restPassword';
-import { ResetPassword } from 'src/typeorm/reset-password.entity';
+import { ResetPassword } from 'src/auth/entity/reset-password.entity';
 import { ForgotPasswordDto } from './dto/forgetPassword';
 import { MailService } from './dto/mail.service';
 

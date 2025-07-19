@@ -4,11 +4,11 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/typeorm/auth.typeorm';
+import { User } from 'src/auth/entity/auth.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ResetPassword } from 'src/typeorm/reset-password.entity';
+import { ResetPassword } from 'src/auth/entity/reset-password.entity';
 import { MailService } from './dto/mail.service';
 
 @Module({

@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, ManyToMany, JoinTable, UpdateDateColumn, CreateDateColumn } from 'typeorm';
 import { Chat } from './chat.entity';
-import { User } from './auth.typeorm';
+import { User } from '../../auth/entity/auth.entity';
 import { ChatRoomParticipant } from './room-participants.entity';
 
 @Entity()

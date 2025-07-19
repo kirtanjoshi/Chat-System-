@@ -5,10 +5,10 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/signin.dto';
-import { ResetPassword } from 'src/typeorm/reset-password.entity';
+import { ResetPassword } from 'src/auth/entity/reset-password.entity';
 import { ResetPasswordDto } from './dto/restPassword';
 import { ForgotPasswordDto } from './dto/forgetPassword';
-import { User } from 'src/typeorm/auth.typeorm';
+import { User } from 'src/auth/entity/auth.entity';
 
 @Controller('auth')
 export class AuthController {
