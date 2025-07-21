@@ -13,7 +13,7 @@ yarn-error.log*
 lerna-debug.log*
 
 
-/src/firebase-admin/config/firebase-service-account.json
+# /src/firebase-admin/config/firebase-service-account.json
 
 # OS
 .DS_Store
