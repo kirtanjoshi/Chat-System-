@@ -72,6 +72,8 @@ $ mau deploy
 Package installation
 ```bash
 $ npm install firebase-admin
+$ npm install --save @nestjs/swagger
+
 
 ```
 

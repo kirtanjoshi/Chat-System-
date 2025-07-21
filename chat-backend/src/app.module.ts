@@ -14,6 +14,7 @@ import { FirebaseAdminModule } from './firebase-admin/firebase-admin.module';
 import { FirebaseAuthError } from 'firebase-admin/lib/utils/error';
 import { FirebaseAdminController } from './firebase-admin/firebase-admin.controller';
 import { FirebaseAdminService } from './firebase-admin/firebase-admin.service';
+import { StreamFilesController } from './stream-files/stream-files.controller';
 
 
 @Module({
@@ -40,7 +41,7 @@ import { FirebaseAdminService } from './firebase-admin/firebase-admin.service';
     HealthModule,
     FirebaseAdminModule,
   ],
-  controllers: [AppController, MetadataController, FirebaseAdminController],
+  controllers: [AppController, MetadataController, FirebaseAdminController, StreamFilesController],
   providers: [AppService, MailService, FirebaseAdminService],
 })
 export class AppModule {}

@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // import { NestFactory } from '@nestjs/core';
 // import { AppModule } from './app.module';
 
@@ -10,16 +12,27 @@
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS with specific options
   app.enableCors({
-    origin: '*', // Allow all origins for testing; specify frontend URL (e.g., 'http://192.168.1.100:3000') in production
+    origin: '*', // Allow all origins for testing;
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+ const config = new DocumentBuilder()
+   .setTitle('Chat System API')
+   .setDescription('The chat system API description')
+   .setVersion('1.0')
+   .addTag('chtsystem')
+   .build();
+ const documentFactory = () => SwaggerModule.createDocument(app, config);
+ SwaggerModule.setup('api', app, documentFactory);
+
 
   // Get port from environment or default to 3002
   const port = process.env.PORT || 3002;
