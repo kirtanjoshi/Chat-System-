@@ -18,11 +18,18 @@ import {
 } from "lucide-react";
 
 import LinkPreviewComponent from "../auth/link-preview";
+import { useNavigate } from "react-router-dom";
 
 const user = JSON.parse(localStorage.getItem("user"));
+// console.log("Current user:", user);
 const CURRENT_USER_ID = user?.id;
 const CURRENT_USER_EMAIL = user?.email;
 
+
+
+
+
+1
 const socket = io("http://localhost:3002");
 
 function ChatApp() {
@@ -38,11 +45,16 @@ function ChatApp() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+
+
+
 
   const fetchGroups = async () => {
     const res = await fetch(
       `http://localhost:3002/chat/user/${CURRENT_USER_ID}/groups`
     );
+
     const data = await res.json();
     setGroups(data);
   };
@@ -55,17 +67,22 @@ function ChatApp() {
   };
 
   useEffect(() => {
-    if (!CURRENT_USER_ID) {
-      alert("Please login first");
-      return;
-    }
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log("Current user:", user);
+    
+    console.log("Current user ID:", user.id);
+    // if (!CURRENT_USER_ID) {
+    //   alert("Please login first");
+    //   return;
+    // }
     fetchGroups();
     fetchUsers();
   }, []);
 
   useEffect(() => {
     if (!selectedChat) return;
-
+    console.log("Cuurent user  chat:", CURRENT_USER_EMAIL.user.email);
     socket.connect();
 
     if (selectedChat.isGroup) {
@@ -138,7 +155,13 @@ function ChatApp() {
    const urlRegex = /(https?:\/\/[^\s]+)/g;
    const urls = text?.match(urlRegex);
    return urls?.[0] ?? null;
- };
+  };
+      const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/");
+      };
+
 
   const sendMessage = async () => {
     if (!input.trim() && !selectedImage) return;
@@ -158,12 +181,11 @@ function ChatApp() {
       image: imageUrl || null,
     };
 
-
-    
     setSelectedImage(null);
     setImagePreview(null);
 
     console.log("Payload:", payload);
+    // React logout function
 
     if (selectedChat.isGroup) {
       socket.emit("sendGroupMessage", { ...payload, roomId: selectedChat.id });
@@ -215,10 +237,20 @@ function ChatApp() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center font-semibold">
-                {getInitials(CURRENT_USER_EMAIL)}
+                {
+                  user?.profilePicture ?
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover"
+                  /> : getInitials(user?.email)
+               }
               </div>
               <div>
                 <h1 className="text-lg font-semibold">Chats</h1>
+                <div className="p-8 bg-gray-200" onClick={logout}>
+                  Logout{" "}
+                </div>
                 <p className="text-sm text-green-100">{CURRENT_USER_EMAIL}</p>
               </div>
             </div>
@@ -248,11 +280,11 @@ function ChatApp() {
             />
           </div>
         </div>
-
+ 
         {/* Chat List */}
         <div className="flex-1 overflow-y-auto">
           {/* Groups */}
-          {groups.length > 0 && (
+          {groups?.length > 0 && (
             <div className="px-4 py-2">
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                 Groups
@@ -401,38 +433,6 @@ function ChatApp() {
                             </p>
                           )}
 
-                        {/* Reply indicator */}
-                        {/* {msg.replyTo && (
-                          <div
-                            className={`p-2 mb-2 rounded-lg border-l-4 ${
-                              msg.senderId === CURRENT_USER_ID
-                                ? "bg-green-600 border-green-300"
-                                : "bg-gray-100 border-gray-400"
-                            }`}
-                          >
-                            <p
-                              className={`text-xs font-medium ${
-                                msg.senderId === CURRENT_USER_ID
-                                  ? "text-green-100"
-                                  : "text-gray-600"
-                              }`}
-                            >
-                              {msg.replyTo.senderEmail.split("@")[0]}
-                            </p>
-                            <p
-                              className={`text-xs ${
-                                msg.senderId === CURRENT_USER_ID
-                                  ? "text-green-100"
-                                  : "text-gray-500"
-                              }`}
-                            >
-                              {msg.replyTo.type === "image"
-                                ? "📷 Image"
-                                : msg.replyTo.content}
-                            </p>
-                          </div>
-                        )} */}
-
                         {msg.replyTo &&
                           (() => {
                             const original = messages.find(
@@ -502,12 +502,18 @@ function ChatApp() {
                         >
                           {formatTime(msg.createdAt)}
                         </div>
+
+                        <div className="p-8 bg-gray-200">hey </div>
                       </div>
 
                       {/* Reply button */}
                       <button
                         onClick={() => handleReply(msg)}
-                        className="absolute -right-8 top-2 opacity-0 group-hover:opacity-100 p-1 bg-gray-200 hover:bg-gray-300 rounded-full transition-all"
+                        className={`absolute top-2 opacity-0 group-hover:opacity-100 p-1 bg-gray-200 hover:bg-gray-300 rounded-full transition-all ${
+                          msg.senderId === CURRENT_USER_ID
+                            ? "-left-8"
+                            : "-right-8"
+                        }`}
                       >
                         <Reply size={14} className="text-gray-600" />
                       </button>
@@ -735,7 +741,15 @@ function CreateGroup({ onBack }) {
                   onClick={() => toggleParticipant(user.id)}
                 >
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3 font-semibold text-blue-600">
-                    {getInitials(user.email)}
+                    {user.profilePicture ? (
+                      <img
+                        src={user.profilePicture}
+                        alt="Profile Picture"
+                        className="w-8 h-8 rounded-full"
+                      />
+                    ) : (
+                      getInitials(user.email)
+                    )}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">

@@ -8,8 +8,6 @@ export class ChatDto {
   @IsNotEmpty()
   senderEmail?: string;
 
-
-
   @IsString()
   @IsNotEmpty()
   content: string;

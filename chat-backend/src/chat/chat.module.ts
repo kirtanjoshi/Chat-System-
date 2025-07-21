@@ -14,10 +14,17 @@ import { MetadataController } from './metadata.controller';
 import { ChatRoom } from 'src/chat/enitity/chatroom.entity';
 import { ChatRoomParticipant } from 'src/chat/enitity/room-participants.entity';
 import { User } from 'src/auth/entity/auth.entity';
+import { Reactions } from './enitity/reactions.entity';
 configureCloudinary();
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Chat, ChatRoom, ChatRoomParticipant, User]),
+    TypeOrmModule.forFeature([
+      Chat,
+      ChatRoom,
+      ChatRoomParticipant,
+      User,
+      Reactions,
+    ]),
     //
     MulterModule.register({}), /// used for file interceptor
   ],

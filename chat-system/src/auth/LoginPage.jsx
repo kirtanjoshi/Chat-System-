@@ -1,6 +1,8 @@
-  import React, { useEffect, useState } from "react";
+  import React, { use, useEffect, useState } from "react";
   import "./LoginPage.css"; // Ensure this CSS file exists and is styled for SignUp
-  import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+  
+import {signInWithGoogle} from "./Firebase"
 
 const Loginpage = () => {
   const navigate = useNavigate();
@@ -9,7 +11,11 @@ const Loginpage = () => {
       password: "",
     });
     const [errors, setErrors] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    localStorage.removeItem("jwt");
+  })
 
     // Handle input changes
     const handleChange = (e) => {
@@ -25,7 +31,39 @@ const Loginpage = () => {
           [name]: "",
         }));
       }
-    };
+  };
+  // In your Login page
+const handleGoogleLogin = async () => {
+  try {
+    const firebaseIdToken = await signInWithGoogle();
+
+    const res = await fetch("http://localhost:3002/auth/google", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idToken: firebaseIdToken,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to authenticate with backend");
+    }
+
+    const data = await res.json();
+    console.log("Google login successful:", data);
+    navigate("/chat");
+    // After Google login success
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    console.log("JWT Token:", data);
+  } catch (err) {
+    console.error("Google login failed:", err);
+  }
+};
+
 
     // Register user function
     const loginUser = async () => {
@@ -142,6 +180,13 @@ const Loginpage = () => {
               <span className="error-message">{errors.general}</span>
             )}
           </form>
+
+          <div className="p-8 bg-red-800" onClick={
+            handleGoogleLogin
+          } style={{ cursor: "pointer", color: "white", textAlign: "center" }
+          }>
+            Login with Google
+          </div>
 
           <div className="login-footer">
             <p>
