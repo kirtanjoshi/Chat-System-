@@ -12,6 +12,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+
+chat-backend/src/firebase-admin/config/firebase-service-account.json
+
 # OS
 .DS_Store
 
