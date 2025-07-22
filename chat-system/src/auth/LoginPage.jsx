@@ -181,7 +181,7 @@ const handleGoogleLogin = async () => {
             )}
           </form>
 
-          <div className="p-8 bg-red-800" onClick={
+          <div className="p-5 m-8    bg-red-800" onClick={
             handleGoogleLogin
           } style={{ cursor: "pointer", color: "white", textAlign: "center" }
           }>

@@ -28,7 +28,7 @@ export class ChatService {
       const msg = this.chatRepo.create({
         content: dto.content,
         senderId: dto.senderId,
-        senderEmail: dto.senderEmail,
+        senderEmail: dto.senderEmail, 
         image: dto.image,
         replyToMessageId: dto.replyToMessageId,
         room: { id: dto.roomId },

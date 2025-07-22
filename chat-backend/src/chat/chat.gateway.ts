@@ -83,7 +83,8 @@
     async handlePrivateMessage(
       @MessageBody()
       payload: {
-        senderId: number;
+          senderId: number;
+        senderEmail?: string; 
         receiverId: number;
         content: string;
         image?: string;
@@ -98,12 +99,15 @@
 
       const message = await this.chatService.createMessage({
         senderId: payload.senderId,
-        senderEmail: '', // If available
+        senderEmail: payload.senderEmail, 
         roomId: room.id,
         content: payload.content,
         image: payload.image,
         replyToMessageId: payload.replyToMessageId,
       });
+
+      console.log(
+        `Private message sent from `, message)
 
       // Emit to both sender and receiver
       this.server

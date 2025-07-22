@@ -24,6 +24,7 @@ export class Chat {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
   senderId: number;
 
   @Column({ nullable: true })
