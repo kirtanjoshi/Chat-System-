@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prettier/prettier */
  /* eslint-disable @typescript-eslint/no-unused-vars */
   /* eslint-disable prettier/prettier */
@@ -21,16 +25,46 @@
     },
   })
   export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    private userSocketMap = new Map<string, number>(); // socketId => userId
     constructor(private readonly chatService: ChatService) {}
+    private onlineUsers = new Set<number>();
 
     @WebSocketServer() server: Server;
 
     handleConnection(client: Socket) {
-      console.log(`Client connected: ${client.id}`);
+      const userId = client.handshake.auth.userId;
+      if (!userId) {
+        console.log('No userId in auth payload');
+        return;
+      }
+
+      this.userSocketMap.set(client.id, userId);
+      this.onlineUsers.add(userId);
+
+      console.log(`User ${userId} connected`);
+
+      // Send updated online user list to all clients
+      this.server.emit('userOnline', Array.from(this.onlineUsers));
+    }
+
+    @SubscribeMessage('userOnline')
+    handleUserOnline(
+      @ConnectedSocket() client: Socket,
+      @MessageBody() userId: number,
+    ) {
+      this.userSocketMap.set(client.id, userId);
+      console.log(`User ${userId} is online`);
+      client.broadcast.emit('userOnline', userId);
     }
 
     handleDisconnect(client: Socket) {
-      console.log(`Client disconnected: ${client.id}`);
+      const userId = this.userSocketMap.get(client.id);
+      if (userId) {
+        this.userSocketMap.delete(client.id);
+        this.onlineUsers.delete(userId);
+        console.log(`User ${userId} is offline`);
+        this.server.emit('userOnline', Array.from(this.onlineUsers)); // Broadcast updated list
+      }
     }
 
     /// Group Chat Logic
@@ -83,8 +117,8 @@
     async handlePrivateMessage(
       @MessageBody()
       payload: {
-          senderId: number;
-        senderEmail?: string; 
+        senderId: number;
+        senderEmail?: string;
         receiverId: number;
         content: string;
         image?: string;
@@ -99,15 +133,14 @@
 
       const message = await this.chatService.createMessage({
         senderId: payload.senderId,
-        senderEmail: payload.senderEmail, 
+        senderEmail: payload.senderEmail,
         roomId: room.id,
         content: payload.content,
         image: payload.image,
         replyToMessageId: payload.replyToMessageId,
       });
 
-      console.log(
-        `Private message sent from `, message)
+      console.log(`Private message sent from `, message);
 
       // Emit to both sender and receiver
       this.server
@@ -138,4 +171,33 @@
       );
       client.emit('messageHistory', messages);
     }
+
+    @SubscribeMessage('userTyping')
+    handleTyping(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+      const { roomId, isGroup, senderId } = data;
+      if (isGroup) {
+        this.server.to(roomId).emit('userTyping', { senderId });
+      } else {
+        this.server
+          .to(data.receiverId.toString())
+          .emit('userTyping', { senderId });
+      }
+    }
+
+    @SubscribeMessage('userStopTyping')
+    handleStopTyping(
+      @MessageBody() data: any,
+      @ConnectedSocket() client: Socket,
+    ) {
+      const { roomId, isGroup, senderId } = data;
+      if (isGroup) {
+        this.server.to(roomId).emit('userStopTyping', { senderId });
+      } else {
+        client.to(data.receiverSocketId).emit('userStopTyping', { senderId });
+      }
+    }
   }
+
+
+
+  

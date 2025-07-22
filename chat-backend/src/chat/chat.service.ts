@@ -41,6 +41,9 @@ export class ChatService {
     }
   }
 
+
+
+
   async getOrCreatePrivateRoom(
     userId1: number,
     userId2: number,
@@ -163,6 +166,9 @@ export class ChatService {
         where: { user: { id: userId } },
         relations: ['room'],
       });
+
+
+      console.log('Participant Rooms:', participantRooms);
    
       return participantRooms.map((p) => p.room);
     } catch (error) {
@@ -172,14 +178,14 @@ export class ChatService {
     }
   }
 
-  // //  Get users participating in a room
-  // async getParticipants(roomId: number): Promise<User[]> {
-  //   const parts = await this.gpRepo.find({
-  //     where: { room: { id: roomId } },
-  //     relations: ['user'],
-  //   });
-  //   return parts.map((p) => p.user);
-  // }
+  //  Get users participating in a room
+  async getParticipants(roomId: number): Promise<User[]> {
+    const parts = await this.gpRepo.find({
+      where: { room: { id: roomId } },
+      relations: ['user'],
+    });
+    return parts.map((p) => p.user);
+  }
 
   //  Add user to a group
   async addUserToGroup(

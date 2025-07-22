@@ -69,7 +69,9 @@ export class ChatController {
   async leaveGroup(@Param('roomId') roomId: number, @Param('userId') userId: number) {
     return this.chatService.removeUserFromGroup(roomId, userId);
   }
-  // async getParticipants(@Param('id') id: number) {
-  //   return this.chatService.getParticipants(id);
-  // }
+
+  @Get(':id')
+  async getParticipants(@Param('id') id: number) {
+    return this.chatService.getParticipants(id);
+  }
 }

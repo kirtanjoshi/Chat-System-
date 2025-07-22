@@ -67,11 +67,6 @@ const handleGoogleLogin = async () => {
 
     // Register user function
     const loginUser = async () => {
-
-      
-     
-    
-
       setIsLoading(true);
       try {
         const response = await fetch("http://localhost:3002/auth/login", {
